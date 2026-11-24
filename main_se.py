@@ -141,7 +141,7 @@ def main(args, option_text=None):
     else:
         # Build model
         checkpoint_path, _ = utils.get_model_path(args.exp_name, args.iter, 'SE')
-        model_data = torch.load(checkpoint_path, map_location=device)
+        model_data = torch.load(checkpoint_path, map_location=device, weights_only=False)
         model_args = model_data['args']
         model = StyleEncoder(model_args).to(device)
         model.encoder.load_state_dict(model_data['encoder'], strict=False)

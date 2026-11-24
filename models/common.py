@@ -23,7 +23,7 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 
 
-def enc_dec_mask(T, S, frame_width=2, expansion=0, device='cuda'):
+def enc_dec_mask(T, S, frame_width=2, expansion=0, device='cpu'):
     mask = torch.ones(T, S)
     for i in range(T):
         mask[i, max(0, (i - expansion) * frame_width):(i + expansion + 1) * frame_width] = 0

@@ -1,0 +1,14 @@
+# 训练额外依赖：在推理依赖之上追加。用法：bash setup/install_spark.sh --train
+-r requirements-infer.txt
+
+# 必须与 torch 同版本同 CUDA 构建
+torchaudio==2.9.1+cu130
+
+lmdb
+tensorboardX
+colorama
+
+# 不在任何文件里的包（aarch64 上大概率装不上，推理和训练都不需要）：
+#   psbody-mesh、pyrender、trimesh、chumpy、pyglet、pyopengl
+# 它们只用于渲染视频（demo.py 的 render_to_video、utils/renderer.py）和 FLAME 顶点计算。
+# 需要时再单独装，参见 README 的 “Spark” 一节。

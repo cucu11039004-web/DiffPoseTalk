@@ -426,7 +426,7 @@ def main(args, option_text=None):
         # Style Encoder
         if args.style_enc_ckpt:
             # Build model
-            enc_model_data = torch.load(args.style_enc_ckpt, map_location=device)
+            enc_model_data = torch.load(args.style_enc_ckpt, map_location=device, weights_only=False)
             enc_model_args = utils.NullableArgs(enc_model_data['args'])
             style_enc = StyleEncoder(enc_model_args).to(device)
             style_enc.encoder.load_state_dict(enc_model_data['encoder'], strict=False)
@@ -479,13 +479,13 @@ def main(args, option_text=None):
     else:
         # Load model
         checkpoint_path, exp_name = utils.get_model_path(args.exp_name, args.iter)
-        model_data = torch.load(checkpoint_path, map_location=device)
+        model_data = torch.load(checkpoint_path, map_location=device, weights_only=False)
         model_args = utils.NullableArgs(model_data['args'])
 
         # Style Encoder
         if model_args.style_enc_ckpt:
             # Build model
-            enc_model_data = torch.load(model_args.style_enc_ckpt, map_location=device)
+            enc_model_data = torch.load(model_args.style_enc_ckpt, map_location=device, weights_only=False)
             enc_model_args = utils.NullableArgs(enc_model_data['args'])
             style_enc = StyleEncoder(enc_model_args).to(device)
             style_enc.encoder.load_state_dict(enc_model_data['encoder'], strict=False)

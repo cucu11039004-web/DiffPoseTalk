@@ -1,0 +1,17 @@
+# 推理与时延测试依赖（spark：aarch64 + GB10 + CUDA 13，Python 3.10）。
+# 用法见 setup/install_spark.sh；不要在 Mac 或 x86 上直接用本文件。
+# torch 的 +cu130 版本只在 PyTorch 官方索引里有，PyPI 上 aarch64 的 torch 是 CPU 版。
+--extra-index-url https://download.pytorch.org/whl/cu130
+
+torch==2.9.1+cu130
+
+numpy==1.26.4
+scipy==1.13.1
+transformers==4.44.0
+tokenizers==0.19.1
+huggingface-hub==0.24.5
+librosa==0.10.2.post1
+soundfile==0.12.1
+opencv-python-headless==4.10.0.84   # demo.py 顶部 import cv2；只用到读写，不需要 GUI 版
+tqdm
+packaging

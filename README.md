@@ -29,9 +29,24 @@ DiffPoseTalk: Speech-Driven Stylistic 3D Facial Animation and Head Pose Generati
 - (Optional) If you want to train with the `HDTF_TFHP`, please follow this [instruction](./datasets/HDTF_TFHP/README.md) to download the processed dataset.
 
 
-## Inference
+## Spark（aarch64 + GB10 + CUDA 13）
 
-We provide two sets of [pretrained models](https://drive.google.com/drive/folders/1pOwtK95u8O1qG_CiRdD8YcvuKSlFEk-b?usp=sharing) for inference. One predicts head motion and the other does not. The DiffPoseTalk system takes a speech clip, a template face shape parameter, and a style feature as input, and outputs diverse and stylistic lip-synced animations.
+本节是 fork 针对 NVIDIA GB10（Blackwell，aarch64）加的环境与时延测试流程，官方的 `setup/requirements.txt`（x86 + CUDA 12.1 + Python 3.8）保留作对照。
+
+```shell
+git clone git@github.com:cucu11039004-web/DiffPoseTalk.git && cd DiffPoseTalk && git checkout spark
+bash setup/install_spark.sh              # conda 环境 dpt（Python 3.10 + torch 2.9.1+cu130），只含推理依赖
+# 训练时再装：bash setup/install_spark.sh --train
+conda activate dpt
+bash setup/fetch_weights.sh              # 下载权重并校验 SHA-256，缓存 HuBERT
+python bench/infer_bench.py              # 时延基准，说明见 bench/README.md
+```
+
+- 不装 `psbody-mesh`、`pyrender`、`trimesh`、`chumpy`：推理与时延测试只要系数，不渲染、不算 FLAME 顶点；它们在 aarch64 上大概率装不上。要渲染视频时在 x86 机器上装官方环境，或把导出的系数拿到别处渲染。
+- 本分支相对官方代码的改动：所有 `torch.load` 加 `weights_only=False`（torch ≥ 2.6 默认拒绝加载含 `argparse.Namespace` 的 checkpoint，权重已校验哈希）；`enc_dec_mask` 的设备默认值由写死的 `cuda` 改为 `cpu`，模型 `.to(device)` 时再搬走。
+- 局域网内不经 GitHub 传权重：`rsync -avP <源机>:<路径>/experiments <源机>:<路径>/datasets ./`（保持目录结构，再运行 `fetch_weights.sh` 校验）。
+
+ of [pretrained models](https://drive.google.com/drive/folders/1pOwtK95u8O1qG_CiRdD8YcvuKSlFEk-b?usp=sharing) for inference. One predicts head motion and the other does not. The DiffPoseTalk system takes a speech clip, a template face shape parameter, and a style feature as input, and outputs diverse and stylistic lip-synced animations.
 
 | Set  | Style Encoder              | Denosing Network          | Head Motion? |
 | ---- | -------------------------- | ------------------------- | ------------ |
